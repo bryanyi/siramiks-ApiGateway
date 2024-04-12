@@ -8,20 +8,34 @@ spring:
     name: API-GATEWAY
   cloud:
     gateway:
-      mvc:
-        routes:
-          - id: ORDER-SERVICE
-            uri: lb://ORDER-SERVICE
-            predicates:
-              - Path=/api/v1/order/**
-          - id: PRODUCT-SERVICE
-            uri: lb://PRODUCT-SERVICE
-            predicates:
-              - Path=/api/v1/product/**
-          - id: PAYMENT-SERVICE
-            uri: lb://PAYMENT-SERVICE
-            predicates:
-              - Path=/api/v1/payment/**
+      routes:
+        - id: ORDER-SERVICE
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/api/v1/order/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: order-service-cb
+                fallbackUri: forward:/fallback/orderServiceFallback
+        - id: PRODUCT-SERVICE
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/api/v1/product/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: product-service-cb
+                fallbackUri: forward:/fallback/productServiceFallback
+        - id: PAYMENT-SERVICE
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/api/v1/payment/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: payment-service-cb
+                fallbackUri: forward:/fallback/paymentServiceFallback
 eureka:
   instance:
     prefer-ip-address: true
