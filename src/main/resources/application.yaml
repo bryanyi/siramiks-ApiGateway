@@ -13,6 +13,11 @@ spring:
           uri: lb://AUTH-SERVICE
           predicates:
             - Path=/api/v1/auth/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 1
         - id: ORDER-SERVICE
           uri: lb://ORDER-SERVICE
           predicates:
@@ -20,6 +25,10 @@ spring:
           # Api Gateway will filter the endpoint and make sure user is authenticated for each service
           filters:
             - GatewayAuthFilter
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 1
 #          filters:
 #            - name: CircuitBreaker
 #              args:
@@ -31,6 +40,10 @@ spring:
             - Path=/api/v1/product/**
           filters:
             - GatewayAuthFilter
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 1
 #          filters:
 #            - name: CircuitBreaker
 #              args:
@@ -42,6 +55,10 @@ spring:
             - Path=/api/v1/payment/**
           filters:
             - GatewayAuthFilter
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 1
 #          filters:
 #            - name: CircuitBreaker
 #              args:
